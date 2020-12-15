@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Metronome</title>
+</head>
+<body style="padding: 100px">
+<div style="width: 1000px">
+    <p style="font-size: 20px; display: inline"> Please say syllables out loud at the pace indicated by the circle below </p>
+    <canvas id="canvas" style="border: 1px solid black" width="1000px"; height="400px";></canvas>
+    <button id="startBtn" onclick="startExp()">Start</button>
+</div>
+<script>
+    /* View in fullscreen */
+    var elem = document.documentElement;
+    function openFullscreen() {
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
+
+    }
+
+    function startExp() {
+        document.getElementById("startBtn").style.display = "none"
+        openFullscreen()
+        let canvas = document.getElementById("canvas")
+        canvas.width = window.screen.availWidth * .8
+        canvas.height = window.screen.availHeight * .5
+        start = Date.now();
+        requestAnimationFrame(metronome)
+        // canvas.css("width", window.screen.availWidth * .8)
+        // canvas.css("height", window.screen.availHeight * .5)
+    }
+
+    function fillDot() {
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d")
+        ctx.fillStyle = "#6939cb";
+
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 25, 0, 2 * Math.PI);
+        ctx.fill();
+
+    }
+
+    function emptyScreen() {
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d")
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function metronome() {
+        let now = Date.now()
+        if (now >= (start + pace)) {
+            start = now;
+        } else if (now > start + pace * .5) {
+            emptyScreen();
+        } else {
+            fillDot();
+        }
+        requestAnimationFrame(metronome)
+    }
+
+    var start = -1;
+    var pace = 750;
+</script>
+</body>
+</html>
